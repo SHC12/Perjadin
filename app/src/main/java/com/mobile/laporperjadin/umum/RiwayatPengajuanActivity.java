@@ -26,7 +26,7 @@ public class RiwayatPengaduanActivity extends AppCompatActivity {
         setContentView(R.layout.activity_riwayat_pengaduan);
 
         recyclerView = findViewById(R.id.rvRiwayatPengajuanUmum);
-        adapter = new TableAdapter(getRiwayat());
+        adapter = new TableAdapter(getRiwayat(),getApplicationContext());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
@@ -36,6 +36,13 @@ public class RiwayatPengaduanActivity extends AppCompatActivity {
     private List<Pengajuan> getRiwayat() {
         List<Pengajuan> pengajuans = new ArrayList<>();
         pengajuans.add(new Pengajuan("JD001","Arifin","Bandung","20 Mei","22 Mei","1000000","500000","100000","40000","1000000","Disetujui","1"));
+        pengajuans.add(new Pengajuan("JD002","Dedek","Bandung","20 Mei","22 Mei","1000000","500000","100000","40000","1000000","Disetujui","2"));
+        pengajuans.add(new Pengajuan("JD002","Dedek","Bandung","20 Mei","22 Mei","1000000","500000","100000","40000","1000000","Disetujui","2"));
+        pengajuans.add(new Pengajuan("JD002","Dedek","Bandung","20 Mei","22 Mei","1000000","500000","100000","40000","1000000","Disetujui","2"));
+        pengajuans.add(new Pengajuan("JD002","Dedek","Bandung","20 Mei","22 Mei","1000000","500000","100000","40000","1000000","Disetujui","2"));
+        pengajuans.add(new Pengajuan("JD002","Dedek","Bandung","20 Mei","22 Mei","1000000","500000","100000","40000","1000000","Disetujui","2"));
+        pengajuans.add(new Pengajuan("JD002","Dedek","Bandung","20 Mei","22 Mei","1000000","500000","100000","40000","1000000","Disetujui","2"));
+        pengajuans.add(new Pengajuan("JD002","Dedek","Bandung","20 Mei","22 Mei","1000000","500000","100000","40000","1000000","Disetujui","2"));
         pengajuans.add(new Pengajuan("JD002","Dedek","Bandung","20 Mei","22 Mei","1000000","500000","100000","40000","1000000","Disetujui","2"));
         return pengajuans;
     }
