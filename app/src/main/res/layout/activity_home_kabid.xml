@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".umum.HomeActivityUmum">
+    tools:context=".kepalabidang.HomeActivityKabid">
 
     <include
         android:id="@+id/includeHomeUmum"
@@ -29,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:text="User : UMUM"
+                android:text="User : KABID"
                 android:textColor="@color/colorPrimary"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -58,13 +58,13 @@
 
 
     <LinearLayout
-        android:id="@+id/formPengajuanUmum"
+        android:id="@+id/daftarPengajuanKabid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="40dp"
+        android:onClick="toDaftarPengajuanKabid"
         android:orientation="vertical"
-        android:onClick="toPengajuanUmum"
-        app:layout_constraintEnd_toStartOf="@+id/riwayatPengajuanUmum"
+        app:layout_constraintEnd_toStartOf="@+id/akunKabid"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView">
 
@@ -78,47 +78,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="Form Pengajuan"
+            android:text="Daftar Pengajuan"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/riwayatPengajuanUmum"
+        android:id="@+id/akunKabid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="40dp"
-        android:onClick="toRiwayatUmum"
+        android:onClick="toAkunKabid"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView">
-
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:scaleType="fitXY"
-            android:src="@drawable/icon_history_form" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Riwayat Pengajuan"
-            android:textColor="@android:color/black"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/accountUmum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="40dp"
-        android:onClick="toAccountUmum"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/riwayatPengajuanUmum"
         app:layout_constraintTop_toBottomOf="@+id/cardView">
 
         <ImageView
@@ -133,38 +106,41 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="Akun"
-            android:layout_gravity="center"
+            android:layout_gravity="center_horizontal"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
     </LinearLayout>
 
-
     <LinearLayout
-        android:id="@+id/logoutUmum"
+        android:id="@+id/logoutKabid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_margin="40dp"
+        android:onClick="toLogoutKabid"
         android:orientation="vertical"
-        android:onClick="toLogoutUmum"
-        app:layout_constraintEnd_toStartOf="@+id/riwayatPengajuanUmum"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/formPengajuanUmum">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/akunKabid"
+        app:layout_constraintTop_toBottomOf="@+id/cardView">
 
         <ImageView
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
+            android:scaleType="fitXY"
             android:src="@drawable/icon_logout" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="5dp"
             android:text="Logout"
-            android:layout_gravity="center"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
     </LinearLayout>
+
+
+
 
 
 

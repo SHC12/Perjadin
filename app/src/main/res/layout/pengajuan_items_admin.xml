@@ -22,12 +22,12 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/txtKotaTujuan"
+        android:id="@+id/txtNamaPengaju"
         android:layout_width="150dp"
         android:layout_toRightOf="@id/txtId"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        android:text="Kota Tujuan"
+        android:text="Nama"
 
         android:textSize="12sp" />
 
@@ -37,7 +37,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="top"
         android:text="Info"
-        android:layout_toRightOf="@id/txtKotaTujuan"
+        android:layout_toRightOf="@id/txtNamaPengaju"
         android:textSize="12sp" />
 
 

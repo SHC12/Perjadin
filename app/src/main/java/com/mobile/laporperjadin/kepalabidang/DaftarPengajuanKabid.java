@@ -1,12 +1,12 @@
-package com.mobile.laporperjadin.umum;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+package com.mobile.laporperjadin.kepalabidang;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -15,6 +15,7 @@ import com.android.volley.toolbox.Volley;
 import com.mobile.laporperjadin.R;
 import com.mobile.laporperjadin.adapter.TableAdapter;
 import com.mobile.laporperjadin.model.Pengajuan;
+import com.mobile.laporperjadin.umum.RiwayatPengajuanActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,11 +24,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RiwayatPengajuanActivity extends AppCompatActivity {
+public class DaftarPengajuanKabid extends AppCompatActivity {
     RecyclerView recyclerView;
     TableAdapter adapter;
-    private String URL = "http://muhyudi.my.id/api_android/get_pengajuan.php?id_user=";
-    String URL_LENGKAP;
+    private String URL = "http://muhyudi.my.id/api_android/get_pengajuan_admin.php";
     public static final String PREFS_NAME = "MyPrefsFile";
     String id_user;
 
@@ -35,11 +35,8 @@ public class RiwayatPengajuanActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_riwayat_pengajuan);
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        id_user = settings.getString("id_user", "default");
-        URL_LENGKAP = URL + id_user;
-        recyclerView = findViewById(R.id.rvRiwayatPengajuanUmum);
+        setContentView(R.layout.activity_daftar_pengajuan);
+        recyclerView = findViewById(R.id.rvDaftarKabid);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -123,7 +120,7 @@ public class RiwayatPengajuanActivity extends AppCompatActivity {
 //    }
 
     private void getRiwayatUmum(){
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(URL_LENGKAP, new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(URL, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 if (response.length() > 0) {
@@ -160,7 +157,7 @@ public class RiwayatPengajuanActivity extends AppCompatActivity {
 
 
                             listData.add(data);
-                            adapter = new TableAdapter(listData,RiwayatPengajuanActivity.this);
+                            adapter = new TableAdapter(listData, DaftarPengajuanKabid.this);
                             recyclerView.setAdapter(adapter);
                         } catch (JSONException e) {
                             e.printStackTrace();

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".kepalabidang.DaftarPengajuanKabid">
+    tools:context=".admin.KelolaUserActivity">
 
     <include
         android:id="@+id/include2"
@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:text="Daftar Pengajuan Perjalanan Dinas"
+        android:text="Kelola User"
         android:textColor="@color/colorPrimary"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -23,12 +23,21 @@
         app:layout_constraintTop_toBottomOf="@+id/include2" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvDaftarKabid"
+        android:id="@+id/rvKelolaUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         app:layout_constraintTop_toBottomOf="@+id/textView10"
         tools:listitem="@layout/pengajuan_items" />
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Export To PDF"
+        android:onClick="toIntentPdf"
+        android:layout_margin="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvKelolaUser" />
 
 
 

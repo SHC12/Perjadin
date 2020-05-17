@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".umum.HomeActivityUmum">
+    tools:context=".admin.HomeActivityAdmin">
 
     <include
         android:id="@+id/includeHomeUmum"
@@ -29,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:text="User : UMUM"
+                android:text="User : ADMIN"
                 android:textColor="@color/colorPrimary"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -58,12 +58,12 @@
 
 
     <LinearLayout
-        android:id="@+id/formPengajuanUmum"
+        android:id="@+id/formPengajuanPerjadin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="40dp"
         android:orientation="vertical"
-        android:onClick="toPengajuanUmum"
+        android:onClick="toPengajuanPerjadin"
         app:layout_constraintEnd_toStartOf="@+id/riwayatPengajuanUmum"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView">
@@ -78,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="Form Pengajuan"
+            android:text="Pengajuan Perjadin"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
     </LinearLayout>
@@ -88,7 +88,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="40dp"
-        android:onClick="toRiwayatUmum"
+        android:onClick="toKelolaUser"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -105,7 +105,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="Riwayat Pengajuan"
+            android:text="Kelola User"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
     </LinearLayout>
@@ -148,7 +148,7 @@
         android:onClick="toLogoutUmum"
         app:layout_constraintEnd_toStartOf="@+id/riwayatPengajuanUmum"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/formPengajuanUmum">
+        app:layout_constraintTop_toBottomOf="@+id/formPengajuanPerjadin">
 
         <ImageView
             android:layout_width="60dp"

@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
+import com.mobile.laporperjadin.admin.HomeActivityAdmin;
+import com.mobile.laporperjadin.kepalabidang.HomeActivityKabid;
 import com.mobile.laporperjadin.umum.HomeActivityUmum;
 
 public class SuksesActivity extends AppCompatActivity {
@@ -44,13 +46,63 @@ public class SuksesActivity extends AppCompatActivity {
                 }
             });
         }
-        if(result.equals("gantipassword")) {
+        if(result.equals("gantipasswordumum")) {
             title.setText("Ganti Password Berhasil");
             desc.setText("Password berhasil di ganti");
             btnSukses.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startActivity(new Intent(SuksesActivity.this, HomeActivityUmum.class));
+                }
+            });
+        }
+        if(result.equals("gantipasswordadmin")) {
+            title.setText("Ganti Password Berhasil");
+            desc.setText("Password berhasil di ganti");
+            btnSukses.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(SuksesActivity.this, HomeActivityAdmin.class));
+                }
+            });
+        }
+        if(result.equals("gantipasswordkabid")) {
+            title.setText("Ganti Password Berhasil");
+            desc.setText("Password berhasil di ganti");
+            btnSukses.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(SuksesActivity.this, HomeActivityKabid.class));
+                }
+            });
+        }
+        if(result.equals("updatepengajuan")) {
+            title.setText("Pengajuan Berhasil Di Update");
+            desc.setText("Pengajuan Telah Di Update");
+            btnSukses.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(SuksesActivity.this, HomeActivityAdmin.class));
+                }
+            });
+        }
+        if(result.equals("updateuser")) {
+            title.setText("User Berhasil Di Simpan");
+            desc.setText("Semua data user berhasil di simpan");
+            btnSukses.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(SuksesActivity.this, HomeActivityAdmin.class));
+                }
+            });
+        }
+        if(result.equals("hapususer")) {
+            title.setText("User Berhasil Di Hapus");
+            desc.setText("User di hapus dari daftar pengguna aplikasi");
+            btnSukses.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(SuksesActivity.this, HomeActivityAdmin.class));
                 }
             });
         }
