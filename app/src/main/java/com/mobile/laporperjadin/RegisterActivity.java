@@ -1,14 +1,13 @@
 package com.mobile.laporperjadin;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -18,7 +17,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.button.MaterialButton;
-import com.mobile.laporperjadin.admin.DetailUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,8 +28,8 @@ public class RegisterActivity extends AppCompatActivity {
     private String result = "register";
     private MaterialButton btnToVerif;
     private String URL_REGIST = "http://muhyudi.my.id/api_android/model_register.php";
-    private String nama,jabatan,nip,email,username,password;
-    private EditText e_nama_engkap,e_jabatan,e_nip,e_email,e_username,e_password;
+    private String nama, jabatan, nip, email, username, password;
+    private EditText e_nama_engkap, e_jabatan, e_nip, e_email, e_username, e_password;
     private ProgressDialog progressDialog;
 
     @Override
@@ -47,30 +45,34 @@ public class RegisterActivity extends AppCompatActivity {
         e_username = findViewById(R.id.in_username_register);
         e_password = findViewById(R.id.in_password_register);
 
-        nama = e_nama_engkap.getText().toString();
-        jabatan = e_jabatan.getText().toString();
-        nip = e_nip.getText().toString();
-        email = e_email.getText().toString();
-        username = e_username.getText().toString();
-        password = e_password.getText().toString();
 
         progressDialog = new ProgressDialog(RegisterActivity.this);
 
         btnToVerif.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                nama = e_nama_engkap.getText().toString();
+                jabatan = e_jabatan.getText().toString();
+                nip = e_nip.getText().toString();
+                email = e_email.getText().toString();
+                username = e_username.getText().toString();
+                password = e_password.getText().toString();
+
                 progressDialog.setMessage("Mohon Tunggu....");
                 progressDialog.show();
 
-
+                if (nama.isEmpty() || jabatan.isEmpty() || nip.isEmpty() || email.isEmpty() || username.isEmpty() || password.isEmpty()) {
+                    progressDialog.dismiss();
+                    Toast.makeText(RegisterActivity.this, "Semua field harus di isi", Toast.LENGTH_SHORT).show();
+                } else {
                     registerUser(result);
-
+                }
             }
         });
 
     }
 
-    public void registerUser(final String result){
+    public void registerUser(final String result) {
         final String uName = e_nama_engkap.getText().toString().trim();
         final String uJabatan = e_jabatan.getText().toString().trim();
         final String uNip = e_nip.getText().toString().trim();
@@ -89,7 +91,7 @@ public class RegisterActivity extends AppCompatActivity {
 //                    JSONArray jsonArray = jsonObject.getJSONArray("response");
                     if (success.equals("1")) {
                         Intent intent = new Intent(RegisterActivity.this, SuksesActivity.class);
-                        intent.putExtra("result",result);
+                        intent.putExtra("result", result);
                         startActivity(intent);
                     } else {
                         Toast.makeText(getApplicationContext(),
@@ -110,7 +112,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();

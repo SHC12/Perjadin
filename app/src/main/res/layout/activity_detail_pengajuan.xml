@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".DetailPengajuan">
 
     <include
@@ -67,7 +74,7 @@
             <TextView
                 android:id="@+id/namaDetailUmum"
                 android:layout_width="20dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@drawable/table_content_cell_bg"
                 android:textColor="@color/colorPrimary"/>
         </TableRow>
@@ -90,7 +97,7 @@
             <TextView
                 android:id="@+id/kotaTujuanDetailUmum"
                 android:layout_width="220dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@drawable/table_content_cell_bg"
                 android:textColor="@color/colorPrimary"/>
         </TableRow>
@@ -145,7 +152,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <TextView
                 android:layout_weight=".05"
@@ -159,7 +166,7 @@
             <TextView
                 android:id="@+id/biayaPesawatDetailUmum"
                 android:layout_width="220dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@drawable/table_content_cell_bg"
                 android:textColor="@color/colorPrimary"/>
         </TableRow>
@@ -251,7 +258,7 @@
             <TextView
                 android:id="@+id/uangHarianDetailUmum"
                 android:layout_width="220dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@drawable/table_content_cell_bg"
                 android:textColor="@color/colorPrimary"/>
         </TableRow>
@@ -283,3 +290,4 @@
     </TableLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

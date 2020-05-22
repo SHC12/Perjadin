@@ -1,9 +1,9 @@
 package com.mobile.laporperjadin.admin;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,24 +20,31 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.DownloadListener;
+import com.androidnetworking.interfaces.DownloadProgressListener;
 import com.google.android.material.button.MaterialButton;
-import com.mobile.laporperjadin.AccountActivity;
 import com.mobile.laporperjadin.R;
 import com.mobile.laporperjadin.SuksesActivity;
-import com.mobile.laporperjadin.model.Pengajuan;
+import com.mobile.laporperjadin.model.PengajuanAdmin;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class DetailPengajuanAdmin extends AppCompatActivity {
     public static String PENGAJUAN_ADMIN_KEY = "pengajuan_admin_key";
+    String URL_LENGKAP;
+    private String url_export_kwitansi = "http://muhyudi.my.id/api_android/export_kwitansi.php?id_pengajuan=";
     private String URL_UPDATE_STATUS = "http://muhyudi.my.id/api_android/update_status_pengajuan.php";
-    private String URL;
-    private String nama, kota, berangkat, kembali, pesawat, penginapan, taksi_bandara, taksi_daerah, uang_harian,status,result,result_verif,code;
-    private TextView t_nama, t_kota, t_berangkat, t_kembali, t_pesawat, t_penginapan, t_taksi_bandara, t_taksi_daerah, t_uang_harian,t_code;
+    private String nama, kota, berangkat, kembali, pesawat, penginapan, taksi_bandara, taksi_daerah, uang_harian, status, result, result_verif, code, id;
+    private TextView t_nama, t_kota, t_berangkat, t_kembali, t_pesawat, t_penginapan, t_taksi_bandara, t_taksi_daerah, t_uang_harian, t_code;
     private Spinner t_status;
     private ProgressDialog progressDialog;
     private MaterialButton btnSave;
@@ -46,6 +53,10 @@ public class DetailPengajuanAdmin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_pengajuan_admin);
+
+
+        Locale localeId = new Locale("in", "id");
+        NumberFormat numberFormat = NumberFormat.getCurrencyInstance(localeId);
         t_nama = findViewById(R.id.namaDetailUmum);
         t_kota = findViewById(R.id.kotaTujuanDetailUmum);
         t_berangkat = findViewById(R.id.tanggalBerangkatDetailUmum);
@@ -61,9 +72,9 @@ public class DetailPengajuanAdmin extends AppCompatActivity {
         t_status.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(t_status.getSelectedItem().toString().equals("Ditolak")){
+                if (t_status.getSelectedItem().toString().equals("Ditolak")) {
                     result_verif = "1";
-                }else if(t_status.getSelectedItem().toString().equals("Disetujui")){
+                } else if (t_status.getSelectedItem().toString().equals("Disetujui")) {
                     result_verif = "2";
                 } else {
                     result_verif = "0";
@@ -80,8 +91,9 @@ public class DetailPengajuanAdmin extends AppCompatActivity {
         result = "updatepengajuan";
         progressDialog = new ProgressDialog(DetailPengajuanAdmin.this);
 
-        Pengajuan list = getIntent().getParcelableExtra(PENGAJUAN_ADMIN_KEY);
+        PengajuanAdmin list = getIntent().getParcelableExtra(PENGAJUAN_ADMIN_KEY);
         nama = list.getNama();
+        id = list.getId_pengajuan();
         kota = list.getKotaTujuan();
         berangkat = list.getTglBerangkat();
         kembali = list.getTglKembali();
@@ -92,40 +104,41 @@ public class DetailPengajuanAdmin extends AppCompatActivity {
         uang_harian = list.getUangTunai();
         status = list.getStatusPengajuan();
         code = list.getId();
-        String [] items = {"Menunggu Verifikasi","Ditolak","Disetujui"};
-        ArrayAdapter arrayAdapter = new ArrayAdapter(getApplicationContext(),R.layout.support_simple_spinner_dropdown_item,items);
+
+        URL_LENGKAP = url_export_kwitansi + id;
+
+        String[] items = {"Menunggu Verifikasi", "Ditolak", "Disetujui"};
+        ArrayAdapter arrayAdapter = new ArrayAdapter(getApplicationContext(), R.layout.support_simple_spinner_dropdown_item, items);
         t_status.setAdapter(arrayAdapter);
-        if(status.equals("0")){
-          t_status.setSelection(arrayAdapter.getPosition("Menunggu Verifikasi"));
+        if (status.equals("0")) {
+            t_status.setSelection(arrayAdapter.getPosition("Menunggu Verifikasi"));
         }
-        if(status.equals("1")){
+        if (status.equals("1")) {
             t_status.setSelection(arrayAdapter.getPosition("Ditolak"));
         }
-        if(status.equals("2")){
+        if (status.equals("2")) {
             t_status.setSelection(arrayAdapter.getPosition("Disetujui"));
         }
 
 
-
-
-        t_nama.setText(nama.toString());
-        t_kota.setText(kota.toString());
-        t_berangkat.setText(berangkat.toString());
-        t_kembali.setText(kembali.toString());
-        t_pesawat.setText(pesawat.toString());
-        t_penginapan.setText(penginapan.toString());
-        t_taksi_bandara.setText(taksi_bandara.toString());
-        t_taksi_daerah.setText(taksi_daerah.toString());
-        t_uang_harian.setText(uang_harian.toString());
-        t_code.setText("Detail pengajuan dengan code : "+code.toString());
+        t_nama.setText(nama);
+        t_kota.setText(kota);
+        t_berangkat.setText(berangkat);
+        t_kembali.setText(kembali);
+        t_pesawat.setText(numberFormat.format(Double.parseDouble(pesawat)));
+        t_penginapan.setText(numberFormat.format(Double.parseDouble(penginapan)));
+        t_taksi_bandara.setText(numberFormat.format(Double.parseDouble(taksi_bandara)));
+        t_taksi_daerah.setText(numberFormat.format(Double.parseDouble(taksi_daerah)));
+        t_uang_harian.setText(numberFormat.format(Double.parseDouble(uang_harian)));
+        t_code.setText("Detail pengajuan dengan code : " + code);
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 progressDialog.setMessage("Mohon Tunggu....");
                 progressDialog.show();
-                    updateStatusPengajuan(code, result_verif, result);
-
+                updateStatusPengajuan(id, result_verif, result);
+                //  Toast.makeText(DetailPengajuanAdmin.this, ""+code+"\n"+result_verif+"\n"+result+"\n"+id, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -133,8 +146,7 @@ public class DetailPengajuanAdmin extends AppCompatActivity {
     }
 
 
-
-    public void updateStatusPengajuan(final String id_pengajuan, final String status, final String result){
+    public void updateStatusPengajuan(final String id_pengajuan, final String status, final String result) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_UPDATE_STATUS, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -146,7 +158,7 @@ public class DetailPengajuanAdmin extends AppCompatActivity {
 //                    JSONArray jsonArray = jsonObject.getJSONArray("response");
                     if (success.equals("1")) {
                         Intent intent = new Intent(DetailPengajuanAdmin.this, SuksesActivity.class);
-                        intent.putExtra("result",result);
+                        intent.putExtra("result", result);
                         startActivity(intent);
                     } else {
                         Toast.makeText(getApplicationContext(),
@@ -165,9 +177,9 @@ public class DetailPengajuanAdmin extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Log.e("update", error.getMessage());
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
@@ -182,4 +194,35 @@ public class DetailPengajuanAdmin extends AppCompatActivity {
     }
 
 
+    public void cetakKwitansi(View view) {
+        download_kwitansi(URL_LENGKAP);
+    }
+
+    public void download_kwitansi(String aUrl) {
+        AndroidNetworking.download(aUrl, "/storage/emulated/0/Download/", "kwitansi_pengajuan.pdf")
+                .setTag("downloadTest")
+                .setPriority(Priority.MEDIUM)
+                .addHeaders("Authorization", "Basic YnNyZTpzZWN1cmV0cmFuc2FjdGlvbnMhISE=")
+                .build()
+                .setDownloadProgressListener(new DownloadProgressListener() {
+                    @Override
+                    public void onProgress(long bytesDownloaded, long totalBytes) {
+                        Toast.makeText(DetailPengajuanAdmin.this, "Mengunduh File", Toast.LENGTH_SHORT).show();
+                        // do anything with progress
+                    }
+                })
+                .startDownload(new DownloadListener() {
+                    @Override
+                    public void onDownloadComplete() {
+                        // do anything after completion
+//                        progressDialog.dismiss();
+                        Toast.makeText(DetailPengajuanAdmin.this, "Unduhan Telah Selesai", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(ANError error) {
+                        // handle error
+                    }
+                });
+    }
 }

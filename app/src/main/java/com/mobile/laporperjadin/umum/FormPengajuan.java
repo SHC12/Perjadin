@@ -1,11 +1,13 @@
 package com.mobile.laporperjadin.umum;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -25,38 +27,60 @@ import com.mobile.laporperjadin.SuksesActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
-public class FormPengajuan extends AppCompatActivity {
+import me.abhinay.input.CurrencyEditText;
+import me.abhinay.input.CurrencySymbols;
+
+public class FormPengajuan extends AppCompatActivity implements View.OnClickListener {
     public static final String PREFS_NAME = "MyPrefsFile";
     public static String URL = "http://muhyudi.my.id/api_android/buat_pengajuan.php";
     MaterialButton btnAjukan;
-    EditText nama, kota, berangkat, kembali, pesawat, penginapan, taksi_bandara, taksi_daerah, uang_harian;
+    CurrencyEditText pesawat, penginapan, taksi_bandara, taksi_daerah, uang_harian;
+    EditText nama, kota, berangkat, kembali;
     String s_nama, s_kota, s_berangkat, s_kembali, s_pesawat, s_penginapan, s_taksi_bandara, s_taksi_daerah, s_uang_harian;
     String id_user;
     private ProgressDialog progressDialog;
+    private DatePickerDialog datePickerDialog;
+    private SimpleDateFormat simpleDateFormat;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_pengajuan);
 
+
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         id_user = settings.getString("id_user", "default");
+
+        simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
         btnAjukan = findViewById(R.id.btnAjukanUmum);
         nama = findViewById(R.id.in_namePengajuan);
         kota = findViewById(R.id.in_kotaTujuan);
         berangkat = findViewById(R.id.in_tanggalBerangkat);
+        berangkat.setOnClickListener(this);
         kembali = findViewById(R.id.in_tanggalKembali);
+        kembali.setOnClickListener(this);
         pesawat = findViewById(R.id.in_biayaPesawat);
+        setEdt(pesawat);
         penginapan = findViewById(R.id.in_biayaPenginapan);
+        setEdt(penginapan);
         taksi_bandara = findViewById(R.id.in_biayaTaksi);
+        setEdt(taksi_bandara);
         taksi_daerah = findViewById(R.id.in_biayaTaksiDaerah);
+        setEdt(taksi_daerah);
         uang_harian = findViewById(R.id.in_uangHarian);
+        setEdt(uang_harian);
+
+
         progressDialog = new ProgressDialog(FormPengajuan.this);
-        final String resultAjukan = "ajukan";
+
         btnAjukan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,26 +88,58 @@ public class FormPengajuan extends AppCompatActivity {
                 s_kota = kota.getText().toString();
                 s_berangkat = berangkat.getText().toString();
                 s_kembali = kembali.getText().toString();
-                s_pesawat = pesawat.getText().toString();
-                s_penginapan = penginapan.getText().toString();
-                s_taksi_bandara = taksi_bandara.getText().toString();
-                s_taksi_daerah = taksi_daerah.getText().toString();
-                s_uang_harian = uang_harian.getText().toString();
+                s_pesawat = "" + pesawat.getCleanIntValue();
+                s_penginapan = "" + penginapan.getCleanIntValue();
+                s_taksi_bandara = "" + taksi_bandara.getCleanIntValue();
+                s_taksi_daerah = "" + taksi_daerah.getCleanIntValue();
+                s_uang_harian = "" + uang_harian.getCleanIntValue();
+
 
                 progressDialog.setMessage("Mohon Tunggu....");
                 progressDialog.show();
 
-                if(s_nama.equals("") || s_kota.equals("") || s_berangkat.equals("") || s_kembali.equals("") || s_pesawat.equals("")|| s_penginapan.equals("")||s_taksi_bandara.equals("")
-                ||s_taksi_daerah.equals("") || s_uang_harian.equals("")
-                ){ progressDialog.dismiss();
+                if (s_nama.equals("") || s_kota.equals("") || s_berangkat.equals("") || s_kembali.equals("") || s_pesawat.equals("") || s_penginapan.equals("") || s_taksi_bandara.equals("")
+                        || s_taksi_daerah.equals("") || s_uang_harian.equals("")
+                ) {
+                    progressDialog.dismiss();
                     Toast.makeText(FormPengajuan.this, "Silahkan lengkapi data", Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     buat_pengaduan(id_user, s_nama, s_kota, s_berangkat, s_kembali, s_pesawat, s_penginapan, s_taksi_bandara, s_taksi_daerah, s_uang_harian);
                 }
 
 
             }
         });
+
+
+    }
+
+    private void setEdt(CurrencyEditText target) {
+        target.setCurrency(CurrencySymbols.INDONESIA);
+        target.setDecimals(true);
+        target.setSeparator(".");
+    }
+
+
+    private void showDateDialog(final EditText edt_target) {
+
+        Calendar newCalendar = Calendar.getInstance();
+
+        datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+
+                edt_target.setText(simpleDateFormat.format(newDate.getTime()));
+            }
+
+        }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+
+        datePickerDialog.show();
     }
 
 
@@ -93,7 +149,7 @@ public class FormPengajuan extends AppCompatActivity {
                                final String bp2,
                                final String bt,
                                final String bt2,
-                               final String uh ) {
+                               final String uh) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -146,5 +202,17 @@ public class FormPengajuan extends AppCompatActivity {
         };
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.in_tanggalBerangkat:
+                showDateDialog(berangkat);
+                break;
+            case R.id.in_tanggalKembali:
+                showDateDialog(kembali);
+                break;
+        }
     }
 }

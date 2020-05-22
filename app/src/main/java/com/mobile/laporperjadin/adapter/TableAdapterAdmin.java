@@ -16,14 +16,15 @@ import com.mobile.laporperjadin.DetailPengajuan;
 import com.mobile.laporperjadin.R;
 import com.mobile.laporperjadin.admin.DetailPengajuanAdmin;
 import com.mobile.laporperjadin.model.Pengajuan;
+import com.mobile.laporperjadin.model.PengajuanAdmin;
 
 import java.util.List;
 
 public class TableAdapterAdmin extends RecyclerView.Adapter {
     private Context mContext;
-    private List<Pengajuan> pengajuanAdminList;
+    private List<PengajuanAdmin> pengajuanAdminList;
 
-    public TableAdapterAdmin(List<Pengajuan> movieList, Context context) {
+    public TableAdapterAdmin(List<PengajuanAdmin> movieList, Context context) {
         this.pengajuanAdminList = movieList;
         this.mContext = context;
     }
@@ -62,7 +63,7 @@ public class TableAdapterAdmin extends RecyclerView.Adapter {
             rowViewHolder.txtKotaTujuan.setText("Nama");
             rowViewHolder.txtInfo.setText("Info");
         } else {
-            Pengajuan modal = pengajuanAdminList.get(rowPos - 1);
+            PengajuanAdmin modal = pengajuanAdminList.get(rowPos - 1);
 
             rowViewHolder.txtId.setBackgroundResource(R.drawable.table_content_cell_bg);
             rowViewHolder.txtKotaTujuan.setBackgroundResource(R.drawable.table_content_cell_bg);

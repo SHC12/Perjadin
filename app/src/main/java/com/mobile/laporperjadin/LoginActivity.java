@@ -1,15 +1,18 @@
 package com.mobile.laporperjadin;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -30,24 +33,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
-    private EditText username, password;
-    private MaterialButton btnLogin;
-    public static String URL = "http://muhyudi.my.id/api_android/model_login.php";
-
-    private ProgressDialog progressDialog;
     public static final String PREFS_NAME = "MyPrefsFile";
-
+    public static String URL = "http://muhyudi.my.id/api_android/model_login.php";
     String id_user;
     String username_login;
     String password_login;
-
-
-
+    private EditText username, password;
+    private MaterialButton btnLogin;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M && checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1001);
+        }
 
         progressDialog = new ProgressDialog(LoginActivity.this);
         username = findViewById(R.id.in_username);
@@ -61,11 +63,11 @@ public class LoginActivity extends AppCompatActivity {
 
                 progressDialog.setMessage("Mohon Tunggu....");
                 progressDialog.show();
-                if(username_login.isEmpty()){
+                if (username_login.isEmpty()) {
                     username.setError("Username tidak boleh kosong !");
-                }else if(password_login.isEmpty()){
+                } else if (password_login.isEmpty()) {
                     password.setError("Password tidak boleh kosong !");
-                }else {
+                } else {
 
                     auth_user(username_login, password_login);
 
@@ -77,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public void auth_user(final String usernamee, final String passwordd){
+    public void auth_user(final String usernamee, final String passwordd) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -96,9 +98,7 @@ public class LoginActivity extends AppCompatActivity {
                             String username = jsonObject.getString("username").trim();
                             String level = jsonObject.getString("level").trim();
                             String status = jsonObject.getString("statusakun").trim();
-
-
-
+                            String nama = jsonObject.getString("nama").trim();
 
 
                             SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -107,29 +107,29 @@ public class LoginActivity extends AppCompatActivity {
                             editor.putString("username", username);
                             editor.putString("level", level);
                             editor.putString("status", status);
-
+                            editor.putString("nama", nama);
 
 
                             editor.commit();
 
 
-                            if(level.equals("1") && status.equals("1") ){
+                            if (level.equals("1") && status.equals("1")) {
                                 Intent intent = new Intent(getApplicationContext(), HomeActivityUmum.class);
                                 intent.putExtra("username", username);
                                 intent.putExtra("id_user", id_user);
 
 
                                 startActivity(intent);
-                            } else if(level.equals("1") && status.equals("0") ){
+                            } else if (level.equals("1") && status.equals("0")) {
                                 Toast.makeText(LoginActivity.this, "Akun anda belum aktif", Toast.LENGTH_SHORT).show();
-                            } else if(level.equals("2")){
+                            } else if (level.equals("2")) {
                                 Intent intent = new Intent(getApplicationContext(), HomeActivityAdmin.class);
                                 intent.putExtra("username", username);
                                 intent.putExtra("id_user", id_user);
 
 
                                 startActivity(intent);
-                            }else if(level.equals("3")){
+                            } else if (level.equals("3")) {
                                 Intent intent = new Intent(getApplicationContext(), HomeActivityKabid.class);
                                 intent.putExtra("username", username);
                                 intent.putExtra("id_user", id_user);
@@ -157,9 +157,9 @@ public class LoginActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(LoginActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
@@ -170,6 +170,19 @@ public class LoginActivity extends AppCompatActivity {
         };
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1001:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Ijin Diterima!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Ijin Ditolak!", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+        }
     }
 }
 

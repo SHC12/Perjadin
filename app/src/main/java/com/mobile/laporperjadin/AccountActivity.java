@@ -28,16 +28,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AccountActivity extends AppCompatActivity {
+    public static final String PREFS_NAME = "MyPrefsFile";
+    EditText password;
+    String s_password, id_user, level, s_username;
     private MaterialButton btnGantiPassword;
-    private String results ="";
+    private String results = "";
     private EditText edtReset;
     private TextView username;
-    EditText password;
-    String s_password, id_user, level,s_username;
     private ProgressDialog progressDialog;
     private String URL = "http://muhyudi.my.id/api_android/ganti_password.php";
-    public static final String PREFS_NAME = "MyPrefsFile";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +47,12 @@ public class AccountActivity extends AppCompatActivity {
         id_user = settings.getString("id_user", "default");
         level = settings.getString("level", "default");
         s_username = settings.getString("username", "default");
-        username.setText(": "+s_username);
-        if(level.equals("1")){
+        username.setText(": " + s_username);
+        if (level.equals("1")) {
             results = "gantipasswordumum";
-        }else if(level.equals("2")){
+        } else if (level.equals("2")) {
             results = "gantipasswordadmin";
-        }else if(level.equals("3")){
+        } else if (level.equals("3")) {
             results = "gantipasswordkabid";
         }
         progressDialog = new ProgressDialog(AccountActivity.this);
@@ -68,16 +67,16 @@ public class AccountActivity extends AppCompatActivity {
                 s_password = edtReset.getText().toString();
 
 
-                if(s_password.equals("")){
+                if (s_password.equals("")) {
                     password.setError("Silahkan masukkan password baru");
-                }else{
+                } else {
                     reset_password(id_user, s_password, results);
                 }
             }
         });
     }
 
-    public void reset_password(final String id_user, final String password, final String result){
+    public void reset_password(final String id_user, final String password, final String result) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -89,7 +88,7 @@ public class AccountActivity extends AppCompatActivity {
 //                    JSONArray jsonArray = jsonObject.getJSONArray("response");
                     if (success.equals("1")) {
                         Intent intent = new Intent(AccountActivity.this, SuksesActivity.class);
-                        intent.putExtra("result",result);
+                        intent.putExtra("result", result);
                         startActivity(intent);
                     } else {
                         Toast.makeText(getApplicationContext(),
@@ -110,7 +109,7 @@ public class AccountActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();

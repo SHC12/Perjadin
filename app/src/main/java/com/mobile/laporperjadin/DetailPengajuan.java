@@ -1,22 +1,26 @@
 package com.mobile.laporperjadin;
 
 import android.os.Bundle;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.mobile.laporperjadin.model.Pengajuan;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class DetailPengajuan extends AppCompatActivity {
     public static String PENGAJUAN_KEY = "pengajuan_key";
-    private String nama, kota, berangkat, kembali, pesawat, penginapan, taksi_bandara, taksi_daerah, uang_harian,status,result_status,code;
-    private TextView t_nama, t_kota, t_berangkat, t_kembali, t_pesawat, t_penginapan, t_taksi_bandara, t_taksi_daerah, t_uang_harian,t_status,t_code;
+    private String nama, kota, berangkat, kembali, pesawat, penginapan, taksi_bandara, taksi_daerah, uang_harian, status, result_status, code;
+    private TextView t_nama, t_kota, t_berangkat, t_kembali, t_pesawat, t_penginapan, t_taksi_bandara, t_taksi_daerah, t_uang_harian, t_status, t_code;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_pengajuan);
+        Locale localeId = new Locale("in", "id");
+        NumberFormat numberFormat = NumberFormat.getCurrencyInstance(localeId);
 
         t_nama = findViewById(R.id.namaDetailUmum);
         t_kota = findViewById(R.id.kotaTujuanDetailUmum);
@@ -43,28 +47,28 @@ public class DetailPengajuan extends AppCompatActivity {
         code = list.getId();
         status = list.getStatusPengajuan();
 
-        if(status.equals("0")){
+        if (status.equals("0")) {
             result_status = "Menunggu Verifikasi";
         }
-        if(status.equals("1")){
+        if (status.equals("1")) {
             result_status = "Ditolak";
         }
-        if(status.equals("2")){
+        if (status.equals("2")) {
             result_status = "Disetujui";
         }
 
 
-        t_nama.setText(nama.toString());
-        t_kota.setText(kota.toString());
-        t_berangkat.setText(berangkat.toString());
-        t_kembali.setText(kembali.toString());
-        t_pesawat.setText(pesawat.toString());
-        t_penginapan.setText(penginapan.toString());
-        t_taksi_bandara.setText(taksi_bandara.toString());
-        t_taksi_daerah.setText(taksi_daerah.toString());
-        t_uang_harian.setText(uang_harian.toString());
-        t_status.setText(result_status.toString());
-        t_code.setText("Detail pengajuan dengan code : "+code.toString());
+        t_nama.setText(nama);
+        t_kota.setText(kota);
+        t_berangkat.setText(berangkat);
+        t_kembali.setText(kembali);
+        t_pesawat.setText(numberFormat.format(Double.parseDouble(pesawat)));
+        t_penginapan.setText(numberFormat.format(Double.parseDouble(penginapan)));
+        t_taksi_bandara.setText(numberFormat.format(Double.parseDouble(taksi_bandara)));
+        t_taksi_daerah.setText(numberFormat.format(Double.parseDouble(taksi_daerah)));
+        t_uang_harian.setText(numberFormat.format(Double.parseDouble(uang_harian)));
+        t_status.setText(result_status);
+        t_code.setText("Detail pengajuan dengan code : " + code);
 
 
     }

@@ -1,9 +1,7 @@
 package com.mobile.laporperjadin.admin;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,7 +21,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.button.MaterialButton;
-import com.mobile.laporperjadin.PDFViewer;
 import com.mobile.laporperjadin.R;
 import com.mobile.laporperjadin.SuksesActivity;
 import com.mobile.laporperjadin.model.User;
@@ -35,19 +32,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DetailUser extends AppCompatActivity {
+    public static String USER_KEY = "user_key";
     private String simpanUser = "simpanuser";
     private String hapusUser = "hapususer";
-    private String id_user,nama,jabatan,nip,email,username,status,result_verif,result_update,result_hapus;
-    private EditText t_nama,t_jabatan,t_nip,t_email,t_username;
+    private String id_user, nama, jabatan, nip, email, username, status, result_verif, result_update, result_hapus, password;
+    private EditText t_nama, t_jabatan, t_nip, t_email, t_username, t_password;
     private TextView t_detail;
     private Spinner t_status;
-    private MaterialButton btnSaveUpdate,btnHapusUser;
+    private MaterialButton btnSaveUpdate, btnHapusUser;
     private ProgressDialog progressDialog;
     private String URL_UPDATE_USER = "http://muhyudi.my.id/api_android/update_status_user.php";
     private String URL_DELETE_USER = "http://muhyudi.my.id/api_android/hapus_user.php";
 
-
-    public static String USER_KEY = "user_key";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +58,7 @@ public class DetailUser extends AppCompatActivity {
         email = user.getEmail();
         username = user.getUsername();
         status = user.getStatus();
+        password = user.getPassword();
 
         progressDialog = new ProgressDialog(DetailUser.this);
 
@@ -72,13 +69,14 @@ public class DetailUser extends AppCompatActivity {
         t_username = findViewById(R.id.usernameDetailUser);
         t_detail = findViewById(R.id.tx_detailUser);
         t_status = findViewById(R.id.statusDetailUser);
+        t_password = findViewById(R.id.passwordDetailUser);
 
         t_status.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(t_status.getSelectedItem().toString().equals("Daftar")){
+                if (t_status.getSelectedItem().toString().equals("Daftar")) {
                     result_verif = "0";
-                }else if(t_status.getSelectedItem().toString().equals("Aktif")){
+                } else if (t_status.getSelectedItem().toString().equals("Aktif")) {
                     result_verif = "1";
                 }
             }
@@ -88,22 +86,23 @@ public class DetailUser extends AppCompatActivity {
 
             }
         });
-        String [] items = {"Aktif","Daftar"};
-        ArrayAdapter arrayAdapter = new ArrayAdapter(getApplicationContext(),R.layout.support_simple_spinner_dropdown_item,items);
+        String[] items = {"Aktif", "Daftar"};
+        ArrayAdapter arrayAdapter = new ArrayAdapter(getApplicationContext(), R.layout.support_simple_spinner_dropdown_item, items);
         t_status.setAdapter(arrayAdapter);
-        if(status.equals("0")){
+        if (status.equals("0")) {
             t_status.setSelection(arrayAdapter.getPosition("Daftar"));
         }
-        if(status.equals("1")){
+        if (status.equals("1")) {
             t_status.setSelection(arrayAdapter.getPosition("Aktif"));
         }
 
-        t_nama.setText(nama.toString());
-        t_jabatan.setText(jabatan.toString());
-        t_nip.setText(nip.toString());
-        t_email.setText(email.toString());
-        t_username.setText(username.toString());
-        t_detail.setText("Detail user : "+nama.toString());
+        t_nama.setText(nama);
+        t_jabatan.setText(jabatan);
+        t_nip.setText(nip);
+        t_email.setText(email);
+        t_username.setText(username);
+        t_password.setText(password);
+        t_detail.setText("Detail user : " + nama);
 
         btnSaveUpdate = findViewById(R.id.btnSaveUser);
         btnSaveUpdate.setOnClickListener(new View.OnClickListener() {
@@ -127,15 +126,16 @@ public class DetailUser extends AppCompatActivity {
         });
 
 
-
     }
 
-    public void updateStatusUser(final String id_user, final String status, final String result){
+    public void updateStatusUser(final String id_user, final String status, final String result) {
         final String uName = t_nama.getText().toString().trim();
         final String uJabatan = t_jabatan.getText().toString().trim();
         final String uNip = t_nip.getText().toString().trim();
         final String uEmail = t_email.getText().toString().trim();
         final String uUsername = t_username.getText().toString().trim();
+        final String uPassword = t_password.getText().toString().trim();
+
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_UPDATE_USER, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -148,7 +148,7 @@ public class DetailUser extends AppCompatActivity {
 //                    JSONArray jsonArray = jsonObject.getJSONArray("response");
                     if (success.equals("1")) {
                         Intent intent = new Intent(DetailUser.this, SuksesActivity.class);
-                        intent.putExtra("result",result);
+                        intent.putExtra("result", result);
                         startActivity(intent);
                     } else {
                         Toast.makeText(getApplicationContext(),
@@ -169,7 +169,7 @@ public class DetailUser extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
@@ -180,6 +180,7 @@ public class DetailUser extends AppCompatActivity {
                 params.put("email", uEmail);
                 params.put("username", uUsername);
                 params.put("status", status);
+                params.put("password", uPassword);
                 return params;
             }
         };
@@ -187,7 +188,8 @@ public class DetailUser extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
-    public void HapusUser(final String id_user, final String result_hapus){
+
+    public void HapusUser(final String id_user, final String result_hapus) {
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_DELETE_USER, new Response.Listener<String>() {
             @Override
@@ -200,7 +202,7 @@ public class DetailUser extends AppCompatActivity {
 //                    JSONArray jsonArray = jsonObject.getJSONArray("response");
                     if (success.equals("1")) {
                         Intent intent = new Intent(DetailUser.this, SuksesActivity.class);
-                        intent.putExtra("result",result_hapus);
+                        intent.putExtra("result", result_hapus);
                         startActivity(intent);
                     } else {
                         Toast.makeText(getApplicationContext(),
@@ -221,7 +223,7 @@ public class DetailUser extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();

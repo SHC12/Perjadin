@@ -11,8 +11,20 @@ public class User implements Parcelable {
     private String nip;
     private String email;
     private String username;
+    private String status;
+    private String password;
 
-
+    public User(String no, String idUser, String nama, String jabatan, String nip, String email, String username, String status, String password) {
+        this.no = no;
+        this.idUser = idUser;
+        this.nama = nama;
+        this.jabatan = jabatan;
+        this.nip = nip;
+        this.email = email;
+        this.username = username;
+        this.status = status;
+        this.password = password;
+    }
 
     protected User(Parcel in) {
         no = in.readString();
@@ -23,6 +35,7 @@ public class User implements Parcelable {
         email = in.readString();
         username = in.readString();
         status = in.readString();
+        password = in.readString();
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -36,17 +49,6 @@ public class User implements Parcelable {
             return new User[size];
         }
     };
-
-    public User(String no, String idUser, String nama, String jabatan, String nip, String email, String username, String status) {
-        this.no = no;
-        this.idUser = idUser;
-        this.nama = nama;
-        this.jabatan = jabatan;
-        this.nip = nip;
-        this.email = email;
-        this.username = username;
-        this.status = status;
-    }
 
     public String getNo() {
         return no;
@@ -112,8 +114,13 @@ public class User implements Parcelable {
         this.status = status;
     }
 
-    private String status;
+    public String getPassword() {
+        return password;
+    }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     @Override
     public int describeContents() {
@@ -130,5 +137,6 @@ public class User implements Parcelable {
         dest.writeString(email);
         dest.writeString(username);
         dest.writeString(status);
+        dest.writeString(password);
     }
 }

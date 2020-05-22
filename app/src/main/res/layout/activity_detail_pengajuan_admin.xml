@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".admin.DetailPengajuanAdmin">
 
     <include
@@ -67,7 +71,7 @@
             <TextView
                 android:id="@+id/namaDetailUmum"
                 android:layout_width="20dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@drawable/table_content_cell_bg"
                 android:textColor="@color/colorPrimary" />
         </TableRow>
@@ -90,7 +94,7 @@
             <TextView
                 android:id="@+id/kotaTujuanDetailUmum"
                 android:layout_width="220dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@drawable/table_content_cell_bg"
                 android:textColor="@color/colorPrimary" />
         </TableRow>
@@ -136,7 +140,7 @@
             <TextView
                 android:id="@+id/tanggalKembaliDetailUmum"
                 android:layout_width="220dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@drawable/table_content_cell_bg"
                 android:textColor="@color/colorPrimary" />
         </TableRow>
@@ -159,7 +163,7 @@
             <TextView
                 android:id="@+id/biayaPesawatDetailUmum"
                 android:layout_width="220dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@drawable/table_content_cell_bg"
                 android:textColor="@color/colorPrimary" />
         </TableRow>
@@ -182,7 +186,7 @@
             <TextView
                 android:id="@+id/biayaPenginapanDetailUmum"
                 android:layout_width="220dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@drawable/table_content_cell_bg"
                 android:textColor="@color/colorPrimary" />
         </TableRow>
@@ -251,7 +255,7 @@
             <TextView
                 android:id="@+id/uangHarianDetailUmum"
                 android:layout_width="220dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@drawable/table_content_cell_bg"
                 android:textColor="@color/colorPrimary" />
         </TableRow>
@@ -287,6 +291,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Cetak Kwitansi"
+        android:onClick="cetakKwitansi"
         android:layout_margin="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
@@ -301,3 +306,4 @@
         app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

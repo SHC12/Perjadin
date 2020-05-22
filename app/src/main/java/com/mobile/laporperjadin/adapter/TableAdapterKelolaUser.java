@@ -79,8 +79,8 @@ public class TableAdapterKelolaUser extends RecyclerView.Adapter {
             if(modal.getStatus().toString().equals("0")){
                 textStatus = "Daftar";
             }
-
-            rowViewHolder.txtNama.setText(modal.getNama() + "");
+            String first[] = modal.getNama().split(" ",2);
+            rowViewHolder.txtNama.setText(first[0]);
             rowViewHolder.txtNo.setText(modal.getNo() + "");
             rowViewHolder.txtJabatan.setText(modal.getJabatan());
             rowViewHolder.txtStatus.setText(textStatus+"");

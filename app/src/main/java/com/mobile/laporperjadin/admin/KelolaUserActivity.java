@@ -1,10 +1,8 @@
 package com.mobile.laporperjadin.admin;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,25 +12,24 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
-import com.mobile.laporperjadin.PDFViewer;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.DownloadListener;
+import com.androidnetworking.interfaces.DownloadProgressListener;
 import com.mobile.laporperjadin.R;
-
-
-import com.mobile.laporperjadin.adapter.TableAdapterAdmin;
 import com.mobile.laporperjadin.adapter.TableAdapterKelolaUser;
-import com.mobile.laporperjadin.model.Pengajuan;
 import com.mobile.laporperjadin.model.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 public class KelolaUserActivity extends AppCompatActivity {
     private String URL_GET_USER = "http://muhyudi.my.id/api_android/get_user.php";
+    private String url_export_user = "http://muhyudi.my.id/api_android/export_user.php";
     private RecyclerView recyclerView;
     private TableAdapterKelolaUser adapter;
     private String resultPdf = "user";
@@ -52,7 +49,7 @@ public class KelolaUserActivity extends AppCompatActivity {
 
     }
 
-    private void getUser(){
+    private void getUser() {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(URL_GET_USER, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
@@ -63,23 +60,23 @@ public class KelolaUserActivity extends AppCompatActivity {
                             JSONObject jsonObject = response.getJSONObject(i);
 
 
-                          User user = new User(
-                                  jsonObject.getString("no"),
-                                  jsonObject.getString("id_user"),
-                                  jsonObject.getString("nama"),
-                                  jsonObject.getString("jabatan"),
-                                  jsonObject.getString("nip"),
-                                  jsonObject.getString("email"),
-                                  jsonObject.getString("username"),
-                                  jsonObject.getString("status")
-                          );
+                            User user = new User(
+                                    jsonObject.getString("no"),
+                                    jsonObject.getString("id_user"),
+                                    jsonObject.getString("nama"),
+                                    jsonObject.getString("jabatan"),
+                                    jsonObject.getString("nip"),
+                                    jsonObject.getString("email"),
+                                    jsonObject.getString("username"),
+                                    jsonObject.getString("status"),
+                                    jsonObject.getString("password")
+                            );
 
 /*
                             Intent intent = new Intent(getActivity().getBaseContext(), DetailDisposisiMasuk.class);
                             intent.putExtra("id_surat", id_surat);
                             getActivity().startActivity(intent);
 */
-
 
 
                             listUser.add(user);
@@ -89,7 +86,7 @@ public class KelolaUserActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-                }else{
+                } else {
 
                 }
             }
@@ -102,9 +99,37 @@ public class KelolaUserActivity extends AppCompatActivity {
         Volley.newRequestQueue(this).add(jsonArrayRequest);
     }
 
-    public void toIntentPdf(View view) {
-        Intent intent = new Intent(KelolaUserActivity.this, PDFViewer.class);
-        intent.putExtra("pdfIntentPdf",resultPdf);
-        startActivity(intent);
+
+    public void expoerUser(View view) {
+        download_user_pdf(url_export_user);
+
+    }
+
+    public void download_user_pdf(String aUrl) {
+        AndroidNetworking.download(aUrl, "/storage/emulated/0/Download/", "user.pdf")
+                .setTag("downloadTest")
+                .setPriority(Priority.MEDIUM)
+                .addHeaders("Authorization", "Basic YnNyZTpzZWN1cmV0cmFuc2FjdGlvbnMhISE=")
+                .build()
+                .setDownloadProgressListener(new DownloadProgressListener() {
+                    @Override
+                    public void onProgress(long bytesDownloaded, long totalBytes) {
+                        Toast.makeText(KelolaUserActivity.this, "Mengunduh File", Toast.LENGTH_SHORT).show();
+                        // do anything with progress
+                    }
+                })
+                .startDownload(new DownloadListener() {
+                    @Override
+                    public void onDownloadComplete() {
+                        // do anything after completion
+//                        progressDialog.dismiss();
+                        Toast.makeText(KelolaUserActivity.this, "Unduhan Telah Selesai", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(ANError error) {
+                        // handle error
+                    }
+                });
     }
 }

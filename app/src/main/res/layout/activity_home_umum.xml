@@ -34,8 +34,8 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/timeNowI"
+            <TextClock
+                android:id="@+id/timeNowUmum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -45,7 +45,7 @@
                 android:layout_marginTop="21dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp"
-                android:text="Jam : 1:30"
+                android:format24Hour="h:mm a"
                 android:textColor="@android:color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"

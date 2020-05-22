@@ -1,8 +1,8 @@
 package com.mobile.laporperjadin.kepalabidang;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,26 +12,30 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.DownloadListener;
+import com.androidnetworking.interfaces.DownloadProgressListener;
 import com.mobile.laporperjadin.R;
 import com.mobile.laporperjadin.adapter.TableAdapter;
 import com.mobile.laporperjadin.model.Pengajuan;
-import com.mobile.laporperjadin.umum.RiwayatPengajuanActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class DaftarPengajuanKabid extends AppCompatActivity {
+    public static final String PREFS_NAME = "MyPrefsFile";
     RecyclerView recyclerView;
     TableAdapter adapter;
-    private String URL = "http://muhyudi.my.id/api_android/get_pengajuan_admin.php";
-    public static final String PREFS_NAME = "MyPrefsFile";
     String id_user;
-
     ArrayList<Pengajuan> listData;
+    private String url_export_riwayat = "http://muhyudi.my.id/api_android/export_riwayat_pengajuan.php";
+    private String URL = "http://muhyudi.my.id/api_android/get_pengajuan_admin.php";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,78 +52,8 @@ public class DaftarPengajuanKabid extends AppCompatActivity {
 
     }
 
-//    private List<Pengajuan> getRiwayat() {
-//        final List<Pengajuan> pengajuans = new ArrayList<>();
-//
-//        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(URL_LENGKAP, new Response.Listener<JSONArray>() {
-//            @Override
-//            public void onResponse(JSONArray response) {
-//                if(response.length() > 0){
-//                    for (int i = 0; i < response.length(); i++) {
-//                        try {
-//
-//                            JSONObject jsonObject = response.getJSONObject(i);
-//
-//                            pengajuans.add(new Pengajuan(jsonObject.getString("id_pengajuan"),
-//                                    jsonObject.getString("id_user"),
-//                                    jsonObject.getString("nama_lengkap"),
-//                                    jsonObject.getString("kota_tujuan"),
-//                                    jsonObject.getString("tanggal_berangkat"),
-//                                    jsonObject.getString("tanggal_kembali"),
-//                                    jsonObject.getString("biaya_pesawat"),
-//                                    jsonObject.getString("biaya_penginapan"),
-//                                    jsonObject.getString("biaya_taksi_bandara"),
-//                                    jsonObject.getString("biaya_taksi_daerah"),
-//                                    jsonObject.getString("biaya_uang_harian"),
-//                                    jsonObject.getString("tanggal_pengajuan"),
-//                                    jsonObject.getString("status")
-//                                    ));
-//
-//
-//
-//
-//
-//
-///*
-//                            Intent intent = new Intent(getActivity().getBaseContext(), DetailDisposisiMasuk.class);
-//                            intent.putExtra("id_surat", id_surat);
-//                            getActivity().startActivity(intent);
-//*/
-//
-//
-//
-//
-//
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//
-//            }
-//        });
-//
-//        Volley.newRequestQueue(this).add(jsonArrayRequest);
-//
-////        pengajuans.add(new Pengajuan("JD001","Arifin","Bandung","20 Mei","22 Mei","1000000","500000","100000","40000","1000000","Disetujui","1"));
-////        pengajuans.add(new Pengajuan("JD002","Dedek","Bandung","20 Mei","22 Mei","1000000","500000","100000","40000","1000000","Disetujui","2"));
-////        pengajuans.add(new Pengajuan("JD002","Dedek","Bandung","20 Mei","22 Mei","1000000","500000","100000","40000","1000000","Disetujui","2"));
-////        pengajuans.add(new Pengajuan("JD002","Dedek","Bandung","20 Mei","22 Mei","1000000","500000","100000","40000","1000000","Disetujui","2"));
-////        pengajuans.add(new Pengajuan("JD002","Dedek","Bandung","20 Mei","22 Mei","1000000","500000","100000","40000","1000000","Disetujui","2"));
-////        pengajuans.add(new Pengajuan("JD002","Dedek","Bandung","20 Mei","22 Mei","1000000","500000","100000","40000","1000000","Disetujui","2"));
-////        pengajuans.add(new Pengajuan("JD002","Dedek","Bandung","20 Mei","22 Mei","1000000","500000","100000","40000","1000000","Disetujui","2"));
-////        pengajuans.add(new Pengajuan("JD002","Dedek","Bandung","20 Mei","22 Mei","1000000","500000","100000","40000","1000000","Disetujui","2"));
-////        pengajuans.add(new Pengajuan("JD002","Dedek","Bandung","20 Mei","22 Mei","1000000","500000","100000","40000","1000000","Disetujui","2"));
-//        return pengajuans;
-//    }
 
-    private void getRiwayatUmum(){
+    private void getRiwayatUmum() {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(URL, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
@@ -154,8 +88,6 @@ public class DaftarPengajuanKabid extends AppCompatActivity {
 */
 
 
-
-
                             listData.add(data);
                             adapter = new TableAdapter(listData, DaftarPengajuanKabid.this);
                             recyclerView.setAdapter(adapter);
@@ -163,7 +95,7 @@ public class DaftarPengajuanKabid extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-                }else{
+                } else {
 
                 }
             }
@@ -174,5 +106,37 @@ public class DaftarPengajuanKabid extends AppCompatActivity {
             }
         });
         Volley.newRequestQueue(this).add(jsonArrayRequest);
+    }
+
+    public void toExportRiwayat(View view) {
+        download_riwayat_pdf(url_export_riwayat);
+    }
+
+    public void download_riwayat_pdf(String aUrl) {
+        AndroidNetworking.download(aUrl, "/storage/emulated/0/Download/", "riwayat_perjadin.pdf")
+                .setTag("downloadTest")
+                .setPriority(Priority.MEDIUM)
+                .addHeaders("Authorization", "Basic YnNyZTpzZWN1cmV0cmFuc2FjdGlvbnMhISE=")
+                .build()
+                .setDownloadProgressListener(new DownloadProgressListener() {
+                    @Override
+                    public void onProgress(long bytesDownloaded, long totalBytes) {
+                        Toast.makeText(DaftarPengajuanKabid.this, "Mengunduh File", Toast.LENGTH_SHORT).show();
+                        // do anything with progress
+                    }
+                })
+                .startDownload(new DownloadListener() {
+                    @Override
+                    public void onDownloadComplete() {
+                        // do anything after completion
+//                        progressDialog.dismiss();
+                        Toast.makeText(DaftarPengajuanKabid.this, "Unduhan Telah Selesai", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(ANError error) {
+                        // handle error
+                    }
+                });
     }
 }

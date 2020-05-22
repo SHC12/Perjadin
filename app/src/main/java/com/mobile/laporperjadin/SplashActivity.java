@@ -1,11 +1,11 @@
 package com.mobile.laporperjadin;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.mobile.laporperjadin.admin.HomeActivityAdmin;
 import com.mobile.laporperjadin.kepalabidang.HomeActivityKabid;
@@ -33,19 +33,18 @@ public class SplashActivity extends AppCompatActivity {
                     e.printStackTrace();
                 } finally {
 
-                    if(!id_user.equals("default")){
-                        if(level.equals("1")){
+                    if (!id_user.equals("default")) {
+                        if (level.equals("1")) {
                             startActivity(new Intent(SplashActivity.this, HomeActivityUmum.class));
-                        }else if(level.equals("2")){
+                        } else if (level.equals("2")) {
                             startActivity(new Intent(SplashActivity.this, HomeActivityAdmin.class));
-                        }else if(level.equals("3")){
+                        } else if (level.equals("3")) {
                             startActivity(new Intent(SplashActivity.this, HomeActivityKabid.class));
                         }
 
-                    }else{
-                        startActivity(new Intent(SplashActivity.this,MenuLoginActivity.class));
+                    } else {
+                        startActivity(new Intent(SplashActivity.this, MenuLoginActivity.class));
                     }
-
 
 
                 }

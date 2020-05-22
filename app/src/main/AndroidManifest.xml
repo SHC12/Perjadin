@@ -3,6 +3,7 @@
     package="com.mobile.laporperjadin">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
 
     <application
@@ -13,7 +14,6 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PDFViewer"></activity>
         <activity android:name=".admin.SendNotifikasi" />
         <activity android:name=".AccountActivity" />
         <activity android:name=".umum.RiwayatPengajuanActivity" />

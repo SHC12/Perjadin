@@ -1,9 +1,8 @@
 package com.mobile.laporperjadin.admin;
 
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,25 +12,27 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
-import com.mobile.laporperjadin.PDFViewer;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.DownloadListener;
+import com.androidnetworking.interfaces.DownloadProgressListener;
 import com.mobile.laporperjadin.R;
-import com.mobile.laporperjadin.adapter.TableAdapter;
 import com.mobile.laporperjadin.adapter.TableAdapterAdmin;
-import com.mobile.laporperjadin.kepalabidang.DaftarPengajuanKabid;
-import com.mobile.laporperjadin.model.Pengajuan;
+import com.mobile.laporperjadin.model.PengajuanAdmin;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class PengajuanPerjadiinAdmin extends AppCompatActivity {
-    private String URL_ADMIN = "http://muhyudi.my.id/api_android/get_pengajuan_admin.php";
     RecyclerView recyclerView;
+    private String URL_ADMIN = "http://muhyudi.my.id/api_android/get_pengajuan_admin.php";
+    private String url_export_riwayat = "http://muhyudi.my.id/api_android/export_riwayat_pengajuan.php";
     private TableAdapterAdmin adapter;
-    private ArrayList<Pengajuan> listData = new ArrayList<>();
+    private ArrayList<PengajuanAdmin> listData = new ArrayList<>();
     private String resultPdf = "pengajuan";
 
 
@@ -41,7 +42,7 @@ public class PengajuanPerjadiinAdmin extends AppCompatActivity {
         setContentView(R.layout.activity_pengajuan_perjadiin_admin);
 
         recyclerView = findViewById(R.id.rvRiwayatPengajuanUmum);
-        adapter = new TableAdapterAdmin(listData,getApplicationContext());
+        adapter = new TableAdapterAdmin(listData, getApplicationContext());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
@@ -51,13 +52,7 @@ public class PengajuanPerjadiinAdmin extends AppCompatActivity {
     }
 
 
-    public void toIntentPdfPengajuan(View view) {
-        Intent intent = new Intent(PengajuanPerjadiinAdmin.this, PDFViewer.class);
-        intent.putExtra("pdfIntentPdf",resultPdf);
-        startActivity(intent);
-    }
-
-    private void getRiwayatUmum(){
+    private void getRiwayatUmum() {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(URL_ADMIN, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
@@ -68,8 +63,9 @@ public class PengajuanPerjadiinAdmin extends AppCompatActivity {
                             JSONObject jsonObject = response.getJSONObject(i);
 
 
-                            Pengajuan data = new Pengajuan();
+                            PengajuanAdmin data = new PengajuanAdmin();
                             data.setNo(jsonObject.getString("no"));
+                            data.setId_pengajuan(jsonObject.getString("id"));
                             data.setId(jsonObject.getString("id_pengajuan"));
                             data.setId_user(jsonObject.getString("id_user"));
                             data.setNama(jsonObject.getString("nama_lengkap"));
@@ -92,8 +88,6 @@ public class PengajuanPerjadiinAdmin extends AppCompatActivity {
 */
 
 
-
-
                             listData.add(data);
                             adapter = new TableAdapterAdmin(listData, PengajuanPerjadiinAdmin.this);
                             recyclerView.setAdapter(adapter);
@@ -101,7 +95,7 @@ public class PengajuanPerjadiinAdmin extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-                }else{
+                } else {
 
                 }
             }
@@ -112,5 +106,38 @@ public class PengajuanPerjadiinAdmin extends AppCompatActivity {
             }
         });
         Volley.newRequestQueue(this).add(jsonArrayRequest);
+    }
+
+    public void toDownloadPDF(View view) {
+        download_riwayat_pdf(url_export_riwayat);
+    }
+
+
+    public void download_riwayat_pdf(String aUrl) {
+        AndroidNetworking.download(aUrl, "/storage/emulated/0/Download/", "riwayat_perjadin.pdf")
+                .setTag("downloadTest")
+                .setPriority(Priority.MEDIUM)
+                .addHeaders("Authorization", "Basic YnNyZTpzZWN1cmV0cmFuc2FjdGlvbnMhISE=")
+                .build()
+                .setDownloadProgressListener(new DownloadProgressListener() {
+                    @Override
+                    public void onProgress(long bytesDownloaded, long totalBytes) {
+                        Toast.makeText(PengajuanPerjadiinAdmin.this, "Mengunduh File", Toast.LENGTH_SHORT).show();
+                        // do anything with progress
+                    }
+                })
+                .startDownload(new DownloadListener() {
+                    @Override
+                    public void onDownloadComplete() {
+                        // do anything after completion
+//                        progressDialog.dismiss();
+                        Toast.makeText(PengajuanPerjadiinAdmin.this, "Unduhan Telah Selesai", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(ANError error) {
+                        // handle error
+                    }
+                });
     }
 }
