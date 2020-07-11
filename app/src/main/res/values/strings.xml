@@ -15,7 +15,7 @@
     </string>
 
     <string name="successPengajuan">
-        Mohon bukti pendukung (Tiket,Dll) di serahkan ke Bagian Perjalanan Dinas.
+        Mohon bukti pendukung (Tiket,Dll) di serahkan ke Bagian Perjalanan Dinas. Atau upload dokumen anda pada tombol dibawah ini
     </string>
 
     <string-array name="list_spinner_status_admin">

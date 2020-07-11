@@ -49,6 +49,17 @@
         tools:layout_editor_absoluteX="20dp" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnUploadDokumen"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_margin="20dp"
+        android:text="Upload Dokumen"
+        android:textStyle="bold"
+        app:cornerRadius="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/desc_sukses" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSuccess"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -57,7 +68,7 @@
         android:textStyle="bold"
         app:cornerRadius="25dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/desc_sukses" />
+        app:layout_constraintTop_toBottomOf="@+id/btnUploadDokumen" />
 
 
 
