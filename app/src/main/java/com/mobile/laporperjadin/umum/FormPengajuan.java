@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -18,45 +21,64 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.button.MaterialButton;
 import com.mobile.laporperjadin.R;
 import com.mobile.laporperjadin.SuksesActivity;
+import com.mobile.laporperjadin.adapter.TableAdapter;
+import com.mobile.laporperjadin.api.ApiClient;
+import com.mobile.laporperjadin.api.ApiInterface;
+import com.mobile.laporperjadin.model.Pengajuan;
+import com.mobile.laporperjadin.model.User;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import me.abhinay.input.CurrencyEditText;
 import me.abhinay.input.CurrencySymbols;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class FormPengajuan extends AppCompatActivity implements View.OnClickListener {
     public static final String PREFS_NAME = "MyPrefsFile";
     public static String URL = "http://muhyudi.my.id/api_android/buat_pengajuan.php";
+    public static String URLNAMA = "http://muhyudi.my.id/api_android/get_nama.php";
+    public static String URLKOTA = "http://muhyudi.my.id/api_android/get_kota.php";
     MaterialButton btnAjukan;
     CurrencyEditText pesawat, penginapan, taksi_bandara, taksi_daerah, uang_harian;
-    EditText nama, kota, berangkat, kembali;
+    EditText  berangkat, kembali;
     String s_nama, s_kota, s_berangkat, s_kembali, s_pesawat, s_penginapan, s_taksi_bandara, s_taksi_daerah, s_uang_harian;
     String id_user;
+    AutoCompleteTextView nama, kota;
     private ProgressDialog progressDialog;
     private DatePickerDialog datePickerDialog;
     private SimpleDateFormat simpleDateFormat;
-
+    private ArrayList<String> namaList = new ArrayList<>();
+    private ArrayList<String> kotaList = new ArrayList<>();
+    private List<User> dataUserList = new ArrayList<>();
+    String id_users;
+    private ApiInterface apiInterface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_pengajuan);
 
-
+        apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        id_user = settings.getString("id_user", "default");
 
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
@@ -78,7 +100,12 @@ public class FormPengajuan extends AppCompatActivity implements View.OnClickList
         uang_harian = findViewById(R.id.in_uangHarian);
         setEdt(uang_harian);
 
-
+        nama.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+         id_users =  dataUserList.get(position).getIdUser();
+            }
+        });
         progressDialog = new ProgressDialog(FormPengajuan.this);
 
         btnAjukan.setOnClickListener(new View.OnClickListener() {
@@ -104,14 +131,82 @@ public class FormPengajuan extends AppCompatActivity implements View.OnClickList
                     progressDialog.dismiss();
                     Toast.makeText(FormPengajuan.this, "Silahkan lengkapi data", Toast.LENGTH_SHORT).show();
                 } else {
-                    buat_pengaduan(id_user, s_nama, s_kota, s_berangkat, s_kembali, s_pesawat, s_penginapan, s_taksi_bandara, s_taksi_daerah, s_uang_harian);
+                    buat_pengaduan(id_users, s_nama, s_kota, s_berangkat, s_kembali, s_pesawat, s_penginapan, s_taksi_bandara, s_taksi_daerah, s_uang_harian);
                 }
 
 
             }
         });
 
+        getNama(nama);
+        getKota(kota);
+    }
 
+    private void getNama(final AutoCompleteTextView target){
+        Call<ResponseBody> getNama = apiInterface.getNama();
+        getNama.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                if(response.isSuccessful()){
+                    progressDialog.dismiss();
+                    try {
+                        JSONObject o = new JSONObject(response.body().string());
+                        JSONArray a = o.getJSONArray("nama");
+                        for(int i = 0; i<a.length();i++){
+
+
+                            JSONObject ao = a.getJSONObject(i);
+
+
+                            namaList.add(ao.getString("nama_lengkap"));
+                            dataUserList.add(new User(ao.getString("id_user"), ao.getString("nama_lengkap")));
+                        }
+                        getSpinnerAPI(target,namaList);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void getKota(final AutoCompleteTextView target){
+        Call<ResponseBody> getKota = apiInterface.getKota();
+        getKota.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                if(response.isSuccessful()){
+                    progressDialog.dismiss();
+                    try {
+                        JSONObject o = new JSONObject(response.body().string());
+                        JSONArray a = o.getJSONArray("kota");
+                        for(int i = 0; i<a.length();i++){
+                            JSONObject ao = a.getJSONObject(i);
+                            kotaList.add(ao.getString("nama_kota"));
+                        }
+                        getSpinnerAPI(target,kotaList);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
     }
 
     private void setEdt(CurrencyEditText target) {
@@ -119,7 +214,10 @@ public class FormPengajuan extends AppCompatActivity implements View.OnClickList
         target.setDecimals(true);
         target.setSeparator(".");
     }
-
+    private void getSpinnerAPI(AutoCompleteTextView target, ArrayList<String> item) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_list_item, item);
+        target.setAdapter(adapter);
+    }
 
     private void showDateDialog(final EditText edt_target) {
 

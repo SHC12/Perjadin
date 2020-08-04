@@ -50,6 +50,11 @@ public class User implements Parcelable {
         }
     };
 
+    public User(String id_user, String nama_lengkap) {
+        this.idUser = id_user;
+        this.nama = nama_lengkap;
+    }
+
     public String getNo() {
         return no;
     }
